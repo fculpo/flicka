@@ -31,7 +31,7 @@ file_size = long(target["size"])
 fr.prefetch() 
 path = target["localpath"] + target["output"]
 
-# main sftp routine
+""" main sftp routine """
 try: 
 	fl = file(path, 'wb') 
 	try: 
@@ -46,7 +46,6 @@ try:
 				break 
 			fl.write(data) 
 			size += len(data) 
-			# print str(size) + " - " + str(file_size)
 	finally: 
 		fl.close() 
 finally: 
@@ -57,7 +56,7 @@ if s.st_size != size:
    
 ftp.close()
 
-# if we are the last slave (last chunk) wait and concatenate all chunks to the end file
+""" if we are the last slave (last chunk) wait and concatenate all chunks to the end file """
 if (target["end"] == "last"):
 	time.sleep(10)
 	destination = open(target["localpath"] + target["filename"], 'wb')

@@ -3,17 +3,17 @@ import sys
 
 
 hosts = []
-# Target ip, port, user, passwd, remotepath, localpath
+""" Target ip, port, user, passwd, remotepath, localpath """
 target = [sys.argv[1], int(sys.argv[2]), sys.argv[3], sys.argv[4], sys.argv[5], sys.argv[6]]
 connections = []
 
-# Loading slaves addresses into memory
-hostsFile = open('./hosts.txt', 'r')
+""" Loading slaves addresses into memory """
+hostsFile = open('./slaves.txt', 'r')
 data = hostsFile.readlines()
 for line in data:
 	hosts.append(line.split(','))
 
-# Setting up all ssh connections to slaves
+""" Setting up all ssh connections to slaves """
 for host in hosts:
 	print host
 	client = paramiko.SSHClient()
@@ -21,10 +21,9 @@ for host in hosts:
 	client.connect(host[0], int(host[1]), username=host[2], password=host[3])
 	connections.append(client)
 
-# Getting the size of the target file to transfer
+""" Getting the size of the target file to transfer """
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-print "Connecting ssh " + target[0] + " " + str(target[1]) + " " + target[2] + " " + target[3]
 ssh.connect(target[0], target[1], target[2], target[3])
 
 ftp = ssh.open_sftp()
@@ -33,7 +32,7 @@ ftp.close()
 
 size = stat.st_size
 
-# Computing the chunks sizes for future requests to slaves
+""" Computing the chunks sizes for future requests to slaves """
 chunks = []
 chunkSize = size//len(hosts)
 reste = size%chunkSize
@@ -42,7 +41,7 @@ for i in range(1,len(hosts)+1):
 	chunks.append(chunkSize)
 	print chunks[i]
 
-# send orders to slaves for parallel transfers
+""" send orders to slaves for parallel transfers """
 i = 0
 offset = 0
 for host, conn in zip(hosts, connections):
